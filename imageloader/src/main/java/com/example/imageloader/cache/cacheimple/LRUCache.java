@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Copyright (C), 2019, 广州雷猴软件有限公司
@@ -42,33 +43,80 @@ public class LRUCache implements MemoryCache {
        }
 
        synchronized (this){
-           size += sizeOf();
+           size += sizeOf(bitmap);
            Bitmap pre = map.put(key,bitmap);
            if(pre != null ){
-
+               size -= sizeOf(pre);
            }
+           resize(maxSize);
+           return true;
        }
     }
 
+
     @Override
     public Bitmap get(String key) {
-        return null;
+        if(key == null){
+            throw new IllegalArgumentException(" key can not be null");
+        }
+
+        synchronized (this){
+           return map.get(key);
+        }
+
     }
 
     @Override
     public Bitmap remove(String key) {
-        return null;
+        if(key == null){
+            throw new IllegalArgumentException(" key can not be null");
+        }
+        synchronized (this){
+           Bitmap old =  map.remove(key);
+           size -=sizeOf(old);
+           return old;
+        }
+
     }
 
     @Override
     public Collection<String> keys() {
-        return null;
+        return map.keySet();
     }
 
     @Override
     public void clear() {
-
+        resize(0);
     }
 
-    private int sizeOf(Bitmap value){}
+    private int sizeOf(Bitmap value){
+        return  value.getByteCount();
+    }
+
+    /**
+     * 保存图片到内存中，要把最少使用的图片删除，删除到需要的空间为止
+     * @param needSize
+     */
+    private void resize(int needSize){
+      while(true){
+          String key;
+          Bitmap old;
+          synchronized (this){
+              //如果内存空间还是够用的
+              if(size <= needSize || map.isEmpty()){
+                 break;
+              }
+
+              Map.Entry<String,Bitmap> oldEntry = map.entrySet().iterator().next();
+              if(oldEntry == null){
+                break;
+              }
+
+              key = oldEntry.getKey();
+              old = oldEntry.getValue();
+              map.remove(key);
+              size -= sizeOf(old);
+          }
+      }
+    }
 }

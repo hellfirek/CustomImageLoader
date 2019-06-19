@@ -1,5 +1,8 @@
 package com.example.imageloader.core;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 /**
  * Copyright (C), 2019, 广州雷猴软件有限公司
  * FileName: ImageLoadEngine.java
@@ -12,4 +15,19 @@ package com.example.imageloader.core;
  * 作者姓名 修改时间 版本号 描述
  */
 public class ImageLoadEngine {
+
+    private Executor taskDistributor;
+    private Executor taskExecutor;
+    private Executor taskExecutorForCachedImages;
+    private ImageLoaderConfig config;
+
+    public ImageLoadEngine(ImageLoaderConfig config){
+       this.config = config;
+
+        taskDistributor = Executors.newSingleThreadExecutor()
+    }
+
+    void submit(){
+
+    }
 }
