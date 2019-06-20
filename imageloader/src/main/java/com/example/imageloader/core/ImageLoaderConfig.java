@@ -18,5 +18,6 @@ public class ImageLoaderConfig {
 
      public MemoryCache memoryCache;
      public DiskCache diskCache;
+     public int threadPoolSize;
 
 }

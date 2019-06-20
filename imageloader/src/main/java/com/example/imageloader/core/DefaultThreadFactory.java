@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DefaultThreadFactory implements ThreadFactory {
 
-    AtomicInteger poolNumber = new AtomicInteger(1);
+   private static final AtomicInteger poolNumber = new AtomicInteger(1);
     AtomicInteger threadNumber = new AtomicInteger(1);
     ThreadGroup group;
     String  namePrefix;
@@ -26,7 +26,6 @@ public class DefaultThreadFactory implements ThreadFactory {
        this.threadPri = threadPriority;
        group = Thread.currentThread().getThreadGroup();
        namePrefix = threadNamePrefix +poolNumber.getAndIncrement()+ "-thread-";
-
     }
 
     @Override

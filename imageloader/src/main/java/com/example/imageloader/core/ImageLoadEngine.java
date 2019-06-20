@@ -2,6 +2,10 @@ package com.example.imageloader.core;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Copyright (C), 2019, 广州雷猴软件有限公司
@@ -21,13 +25,33 @@ public class ImageLoadEngine {
     private Executor taskExecutorForCachedImages;
     private ImageLoaderConfig config;
 
-    public ImageLoadEngine(ImageLoaderConfig config){
-       this.config = config;
+    private volatile AtomicBoolean pause = new AtomicBoolean(false);
+    private final Object pauseLock = new Object();
 
-        taskDistributor = Executors.newSingleThreadExecutor()
+    public ImageLoadEngine(ImageLoaderConfig config) {
+        this.config = config;
+        taskDistributor = Executors.newCachedThreadPool(new DefaultThreadFactory(Thread.NORM_PRIORITY, "pool_d"));
+        taskExecutor = createWorkerPool();
+        taskExecutorForCachedImages = createWorkerPool();
     }
 
-    void submit(){
+    void submit() {
 
+    }
+
+    public void pause(){
+        pause.set(true);
+    }
+
+    public void resume(){
+        pause.set(false);
+        synchronized (pauseLock){
+            pauseLock.notifyAll();
+        }
+    }
+
+    private Executor createWorkerPool(){
+        LinkedBlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
+        return new ThreadPoolExecutor(config.threadPoolSize,config.threadPoolSize,0,TimeUnit.MILLISECONDS,taskQueue,new DefaultThreadFactory(Thread.NORM_PRIORITY,"pool_u"));
     }
 }
