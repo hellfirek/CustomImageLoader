@@ -1,11 +1,13 @@
 package com.example.imageloader.core;
 
+import java.util.HashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Copyright (C), 2019, 广州雷猴软件有限公司
@@ -27,6 +29,8 @@ public class ImageLoadEngine {
 
     private volatile AtomicBoolean pause = new AtomicBoolean(false);
     private final Object pauseLock = new Object();
+
+    private HashMap<String,ReentrantLock> locks = new HashMap<>();
 
     public ImageLoadEngine(ImageLoaderConfig config) {
         this.config = config;
