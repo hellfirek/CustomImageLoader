@@ -2,6 +2,7 @@ package com.example.imageloader.core;
 
 import com.example.imageloader.cache.DiskCache;
 import com.example.imageloader.cache.MemoryCache;
+import com.example.imageloader.core.downloader.ImageDownLoader;
 
 /**
  * Copyright (C), 2019, 广州雷猴软件有限公司
@@ -16,8 +17,10 @@ import com.example.imageloader.cache.MemoryCache;
  */
 public class ImageLoaderConfig {
 
-     public MemoryCache memoryCache;
-     public DiskCache diskCache;
-     public int threadPoolSize;
+     private MemoryCache memoryCache;
+     private DiskCache diskCache;
+     private int threadPoolSize;
+     private ImageDownLoader downLoader;
+
 
 }

@@ -1,6 +1,7 @@
 package com.example.imageloader.core;
 
 import java.util.HashMap;
+import java.util.WeakHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -30,7 +31,7 @@ public class ImageLoadEngine {
     private volatile AtomicBoolean pause = new AtomicBoolean(false);
     private final Object pauseLock = new Object();
 
-    private HashMap<String,ReentrantLock> locks = new HashMap<>();
+    private WeakHashMap<String,ReentrantLock> locks = new WeakHashMap<>();
 
     public ImageLoadEngine(ImageLoaderConfig config) {
         this.config = config;
@@ -58,4 +59,14 @@ public class ImageLoadEngine {
         LinkedBlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
         return new ThreadPoolExecutor(config.threadPoolSize,config.threadPoolSize,0,TimeUnit.MILLISECONDS,taskQueue,new DefaultThreadFactory(Thread.NORM_PRIORITY,"pool_u"));
     }
+
+    public ReentrantLock getLockForUri(String uri){
+         ReentrantLock lock = locks.get(uri);
+         if(lock == null){
+             lock = new ReentrantLock();
+             locks.put(uri,lock);
+         }
+         return lock;
+    }
+
 }
