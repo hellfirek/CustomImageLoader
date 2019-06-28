@@ -2,6 +2,7 @@ package com.example.imageloader.core;
 
 import com.example.imageloader.cache.DiskCache;
 import com.example.imageloader.cache.MemoryCache;
+import com.example.imageloader.core.decode.ImageDecoder;
 import com.example.imageloader.core.downloader.ImageDownLoader;
 
 /**
@@ -21,6 +22,8 @@ public class ImageLoaderConfig {
      private DiskCache diskCache;
      private int threadPoolSize;
      private ImageDownLoader downLoader;
+     private ImageDecoder decoder;
+
 
 
 }
