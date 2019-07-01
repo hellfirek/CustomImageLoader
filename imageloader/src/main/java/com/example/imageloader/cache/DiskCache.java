@@ -24,6 +24,8 @@ public interface DiskCache {
 
     boolean save(String url, Bitmap bitmap);
 
+    boolean save(String url,InputStream inputStream);
+
     boolean remove(String url);
 
     void clear();
