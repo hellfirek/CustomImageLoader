@@ -18,11 +18,11 @@ import com.example.imageloader.core.downloader.ImageDownLoader;
  */
 public class ImageLoaderConfig {
 
-     private MemoryCache memoryCache;
-     private DiskCache diskCache;
-     private int threadPoolSize;
-     private ImageDownLoader downLoader;
-     private ImageDecoder decoder;
+     public MemoryCache memoryCache;
+     public DiskCache diskCache;
+     public int threadPoolSize;
+     public ImageDownLoader downLoader;
+     public ImageDecoder decoder;
 
 
 

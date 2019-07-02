@@ -1,5 +1,7 @@
 package com.example.imageloader.cache.cacheimple;
 
+import java.io.File;
+
 /**
  * Copyright (C), 2019, 广州雷猴软件有限公司
  * FileName: UnLimitedDiskCache.java
@@ -11,5 +13,11 @@ package com.example.imageloader.cache.cacheimple;
  * <author> <time> <version> <desc>
  * 作者姓名 修改时间 版本号 描述
  */
-public class UnLimitedDiskCache  {
+public class UnLimitedDiskCache extends BaseDiskCahceI {
+
+    public UnLimitedDiskCache(File cacheDir) {
+        super(cacheDir);
+    }
+
+
 }

@@ -55,6 +55,10 @@ public class ImageLoadEngine {
         }
     }
 
+    public AtomicBoolean getPause(){
+        return pause;
+    }
+
     private Executor createWorkerPool(){
         LinkedBlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
         return new ThreadPoolExecutor(config.threadPoolSize,config.threadPoolSize,0,TimeUnit.MILLISECONDS,taskQueue,new DefaultThreadFactory(Thread.NORM_PRIORITY,"pool_u"));
@@ -69,4 +73,7 @@ public class ImageLoadEngine {
          return lock;
     }
 
+    public Object getPauseLock(){
+        return pauseLock;
+    }
 }

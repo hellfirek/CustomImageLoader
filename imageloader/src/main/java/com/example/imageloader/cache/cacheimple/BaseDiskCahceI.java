@@ -60,11 +60,11 @@ public class BaseDiskCahceI implements DiskCache {
         File imageFile = getFile(url);
         File tmpFile = new File(imageFile.getAbsolutePath() + TEMP_IMAGE_POSFFIX);
         OutputStream os = null;
-
+        boolean loaded = false;
         try {
             os = new BufferedOutputStream(new FileOutputStream(tmpFile), DEFAULT_BUFFER_SIZE);
             int current = 0;
-            int count = 0;
+            int count ;
             byte[] bytes = new byte[DEFAULT_BUFFER_SIZE];
 
             while ((count = inputStream.read(bytes, 0, DEFAULT_BUFFER_SIZE)) != -1) {
@@ -72,7 +72,7 @@ public class BaseDiskCahceI implements DiskCache {
                 current += count;
             }
             os.flush();
-            tmpFile.renameTo(imageFile);
+            loaded = tmpFile.renameTo(imageFile);
 
             return true;
         } catch (Exception e) {
@@ -87,7 +87,7 @@ public class BaseDiskCahceI implements DiskCache {
                 }
             }
 
-            if(tmpFile!=null){
+            if(loaded && tmpFile!=null){
                 tmpFile.delete();
             }
 
@@ -99,11 +99,22 @@ public class BaseDiskCahceI implements DiskCache {
 
     @Override
     public boolean remove(String url) {
-        return false;
+        return getFile(url).delete();
     }
 
     @Override
     public void clear() {
+       File[] files = cacheDir.listFiles();
+       if(files != null){
+          for(File file:files){
+              try{
+                  file.delete();
+              }catch (Exception e){
+                  e.printStackTrace();
+              }
+
+          }
+       }
 
     }
 
