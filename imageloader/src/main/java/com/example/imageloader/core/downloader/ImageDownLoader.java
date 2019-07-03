@@ -43,5 +43,13 @@ public interface ImageDownLoader {
         private boolean belongsTo(String uri) {
             return uri.toLowerCase(Locale.US).startsWith(uriPrefix);
         }
+
+        /** Removed scheme part ("scheme://") from incoming URI */
+        public String crop(String uri) {
+            if (!belongsTo(uri)) {
+                throw new IllegalArgumentException(String.format("URI [%1$s] doesn't have expected scheme [%2$s]", uri, scheme));
+            }
+            return uri.substring(uriPrefix.length());
+        }
     }
 }

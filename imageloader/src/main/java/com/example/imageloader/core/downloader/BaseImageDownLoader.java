@@ -5,6 +5,8 @@ import android.net.Uri;
 import com.example.imageloader.core.Util.ContentLengthInputStream;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -32,15 +34,21 @@ public class BaseImageDownLoader implements  ImageDownLoader {
     /** {@value} */
     protected static final int BUFFER_SIZE = 32 * 1024; // 32 Kb
 
+    private static final String ERROR_UNSUPPORTED_SCHEME = "UIL doesn't support scheme(protocol) by default [%s]. " + "You should implement this support yourself (BaseImageDownloader.getStreamFromOtherSource(...))";
+
     @Override
-    public InputStream getStream(String imageUri, Object extra) {
+    public InputStream getStream(String imageUri, Object extra) throws IOException{
      switch (Scheme.ofUri(imageUri)){
          case HTTP:
          case HTTPS:
              return getStreamFromNetwork(imageUri,extra);
 
          case FILE:
+             return getStreamFromFile(imageUri,extra);
 
+
+          default:
+              return null;
      }
     }
 
@@ -65,7 +73,9 @@ public class BaseImageDownLoader implements  ImageDownLoader {
     }
 
     protected InputStream getStreamFromFile(String imageUri, Object extra) throws IOException {
-
+        String filePath = Scheme.FILE.crop(imageUri);
+        BufferedInputStream imageStream = new BufferedInputStream(new FileInputStream(filePath), BUFFER_SIZE);
+        return new ContentLengthInputStream(imageStream, (int) new File(filePath).length());
     }
 
     protected HttpURLConnection createConnection(String url, Object extra) throws IOException {
@@ -75,4 +85,9 @@ public class BaseImageDownLoader implements  ImageDownLoader {
         conn.setReadTimeout(DEFAULT_HTTP_READ_TIMEOUT);
         return conn;
     }
+
+    protected InputStream getStreamFromOtherSource(String imageUri, Object extra) throws IOException {
+        throw new UnsupportedOperationException(String.format(ERROR_UNSUPPORTED_SCHEME, imageUri));
+    }
+
 }
